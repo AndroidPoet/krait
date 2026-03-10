@@ -1,9 +1,9 @@
 <p align="center">
-  <h1 align="center">🐍 krait</h1>
-  <p align="center"><strong>Security testing for AI agents</strong></p>
-  <p align="center">
-    Stop shipping agents that hallucinate, loop, and leak — start shipping ones that work.
-  </p>
+  <img src="assets/banner.svg" alt="krait — Security testing for AI agents" width="100%" />
+</p>
+
+<p align="center">
+  <strong>Stop shipping agents that hallucinate, loop, and leak.<br/>Start shipping ones that work.</strong>
 </p>
 
 <p align="center">

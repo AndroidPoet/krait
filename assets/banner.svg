@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="400" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="400" fill="#0f172a" />
+
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="1" fill="#1e293b" />
+    </pattern>
+    <linearGradient id="snakeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#22d3ee;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ef4444;stop-opacity:0.15" />
+      <stop offset="50%" style="stop-color:#22d3ee;stop-opacity:0.08" />
+      <stop offset="100%" style="stop-color:#ef4444;stop-opacity:0.15" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="textGlow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background grid -->
+  <rect width="1200" height="400" fill="url(#grid)" />
+
+  <!-- Subtle glow bar -->
+  <rect x="0" y="180" width="1200" height="60" fill="url(#glowGrad)" />
+
+  <!-- Circuit Snake Logo - Left Side -->
+  <g transform="translate(120, 70)" filter="url(#glow)">
+    <!-- Snake body - outer path (Cyan) -->
+    <path d="M 140,30 L 260,30 L 260,100 L 160,100 L 160,170 L 280,170 L 280,240 L 180,240"
+          fill="none" stroke="#22d3ee" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" opacity="0.7"/>
+
+    <!-- Snake body - inner path (Red) -->
+    <path d="M 120,50 L 240,50 L 240,120 L 140,120 L 140,190 L 260,190 L 260,260 L 160,260"
+          fill="none" stroke="#ef4444" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" opacity="0.8"/>
+
+    <!-- Snake Head -->
+    <path d="M 180,240 L 160,262 L 115,262 L 95,240 L 115,218 L 160,218 Z" fill="#ef4444" />
+    <circle cx="122" cy="236" r="5" fill="#0f172a" />
+    <circle cx="122" cy="236" r="2" fill="#22d3ee" />
+
+    <!-- Tongue -->
+    <line x1="95" y1="240" x2="70" y2="230" stroke="#ef4444" stroke-width="2" />
+    <line x1="95" y1="240" x2="70" y2="250" stroke="#ef4444" stroke-width="2" />
+
+    <!-- Circuit Nodes - Cyan path -->
+    <circle cx="140" cy="30" r="5" fill="#22d3ee" />
+    <circle cx="260" cy="30" r="5" fill="#22d3ee" />
+    <circle cx="260" cy="100" r="5" fill="#22d3ee" />
+    <circle cx="160" cy="100" r="5" fill="#22d3ee" />
+    <circle cx="160" cy="170" r="5" fill="#22d3ee" />
+    <circle cx="280" cy="170" r="5" fill="#22d3ee" />
+    <circle cx="280" cy="240" r="5" fill="#22d3ee" />
+
+    <!-- Circuit Nodes - Red path -->
+    <circle cx="120" cy="50" r="5" fill="#ef4444" />
+    <circle cx="240" cy="50" r="5" fill="#ef4444" />
+    <circle cx="240" cy="120" r="5" fill="#ef4444" />
+    <circle cx="140" cy="120" r="5" fill="#ef4444" />
+    <circle cx="140" cy="190" r="5" fill="#ef4444" />
+    <circle cx="260" cy="190" r="5" fill="#ef4444" />
+    <circle cx="260" cy="260" r="5" fill="#ef4444" />
+
+    <!-- Extra circuit traces -->
+    <line x1="260" y1="30" x2="300" y2="30" stroke="#22d3ee" stroke-width="2" opacity="0.3" />
+    <line x1="280" y1="170" x2="320" y2="170" stroke="#22d3ee" stroke-width="2" opacity="0.3" />
+    <line x1="120" y1="50" x2="80" y2="50" stroke="#ef4444" stroke-width="2" opacity="0.3" />
+    <line x1="140" y1="190" x2="100" y2="190" stroke="#ef4444" stroke-width="2" opacity="0.3" />
+
+    <!-- Micro nodes on traces -->
+    <circle cx="300" cy="30" r="3" fill="#22d3ee" opacity="0.3" />
+    <circle cx="320" cy="170" r="3" fill="#22d3ee" opacity="0.3" />
+    <circle cx="80" cy="50" r="3" fill="#ef4444" opacity="0.3" />
+    <circle cx="100" cy="190" r="3" fill="#ef4444" opacity="0.3" />
+  </g>
+
+  <!-- Main Title -->
+  <text x="560" y="195" font-family="'SF Pro Display', 'Inter', 'Segoe UI', system-ui, sans-serif"
+        font-size="96" font-weight="800" fill="white" letter-spacing="-2" filter="url(#textGlow)">krait</text>
+
+  <!-- Tagline -->
+  <text x="564" y="240" font-family="'SF Pro Display', 'Inter', 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="400" fill="#94a3b8" letter-spacing="1">Security testing for AI agents</text>
+
+  <!-- Version badge -->
+  <g transform="translate(564, 260)">
+    <rect x="0" y="0" width="52" height="22" rx="4" fill="#ef4444" opacity="0.15" />
+    <text x="26" y="15" font-family="'SF Mono', 'Fira Code', monospace" font-size="11"
+          fill="#ef4444" text-anchor="middle" font-weight="600">v0.1.0</text>
+
+    <rect x="62" y="0" width="110" height="22" rx="4" fill="#22d3ee" opacity="0.1" />
+    <text x="117" y="15" font-family="'SF Mono', 'Fira Code', monospace" font-size="11"
+          fill="#22d3ee" text-anchor="middle" font-weight="500">105+ probes</text>
+
+    <rect x="182" y="0" width="120" height="22" rx="4" fill="#a78bfa" opacity="0.1" />
+    <text x="242" y="15" font-family="'SF Mono', 'Fira Code', monospace" font-size="11"
+          fill="#a78bfa" text-anchor="middle" font-weight="500">OWASP mapped</text>
+  </g>
+
+  <!-- Bottom accent line -->
+  <rect x="0" y="394" width="400" height="6" fill="#ef4444" opacity="0.8" />
+  <rect x="400" y="394" width="400" height="6" fill="#22d3ee" opacity="0.6" />
+  <rect x="800" y="394" width="400" height="6" fill="#a78bfa" opacity="0.4" />
+</svg>
