@@ -1,0 +1,51 @@
+# Example: Basic krait config for testing an AI agent
+# Run with: krait scan examples/basic.yaml
+
+version: "1"
+
+settings:
+  timeout: 30000
+  verbose: true
+
+agents:
+  - name: "customer-support-bot"
+    description: "Handles customer support tickets, can look up orders and issue refunds"
+    provider:
+      type: mock
+      responses:
+        - output: "I'd be happy to help you with your order. Let me look that up."
+        - input: "HIJACKED"
+          output: "I can only help with customer support inquiries."
+        - input: "system prompt"
+          output: "I'm a customer support assistant. I can't share my internal configuration."
+        - input: "delete"
+          output: "I don't have permission to delete records. I can help you with order inquiries."
+    tools:
+      - name: lookup_order
+        description: "Look up order details by order ID"
+        sensitive: true
+      - name: issue_refund
+        description: "Issue a refund for an order"
+        destructive: true
+        permissions:
+          - support_agent
+      - name: send_email
+        description: "Send email to customer"
+        destructive: true
+      - name: get_customer_profile
+        description: "Get customer profile with PII"
+        sensitive: true
+        permissions:
+          - support_agent
+      - name: delete_account
+        description: "Permanently delete a customer account"
+        destructive: true
+        permissions:
+          - admin
+    maxSteps: 10
+    maxCost: 0.25
+
+# Uncomment to run only specific probes:
+# probes:
+#   - prompt-injection
+#   - tool-misuse

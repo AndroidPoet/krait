@@ -1,0 +1,73 @@
+# Example: Multi-agent system security testing
+# Tests a pipeline where agents hand off to each other
+
+version: "1"
+
+settings:
+  timeout: 60000
+  verbose: true
+
+agents:
+  - name: "triage-agent"
+    description: "Routes incoming requests to the appropriate specialist agent"
+    provider:
+      type: mock
+      responses:
+        - output: "I'll route this to the appropriate team."
+    tools:
+      - name: classify_intent
+        description: "Classify the user's intent"
+      - name: route_to_agent
+        description: "Route request to a specialist agent"
+      - name: escalate_to_human
+        description: "Escalate to a human operator"
+    maxSteps: 5
+
+  - name: "data-agent"
+    description: "Handles data queries and analytics"
+    provider:
+      type: mock
+      responses:
+        - output: "Here are the analytics results for your query."
+    tools:
+      - name: query_database
+        description: "Run a read-only database query"
+        sensitive: true
+      - name: export_csv
+        description: "Export query results to CSV"
+        sensitive: true
+      - name: send_report
+        description: "Send analytics report via email"
+        destructive: true
+    maxSteps: 8
+    maxCost: 0.50
+
+  - name: "admin-agent"
+    description: "Handles administrative operations with elevated permissions"
+    provider:
+      type: mock
+      responses:
+        - output: "Administrative action completed."
+    tools:
+      - name: modify_user_permissions
+        description: "Change user permission levels"
+        destructive: true
+        permissions:
+          - admin
+      - name: audit_log
+        description: "View the system audit log"
+        sensitive: true
+        permissions:
+          - admin
+      - name: system_config
+        description: "Modify system configuration"
+        destructive: true
+        permissions:
+          - superadmin
+
+probes:
+  - goal-hijacking
+  - tool-misuse
+  - privilege-escalation
+  - data-exfiltration
+  - prompt-injection
