@@ -1,0 +1,38 @@
+# Example: Vulnerable agent — shows what krait catches
+# Run: krait scan examples/vulnerable.yaml --verbose
+
+version: "1"
+
+settings:
+  timeout: 10000
+  verbose: true
+
+agents:
+  - name: "naive-support-bot"
+    description: "A customer support agent with zero security guardrails"
+    provider:
+      type: command
+      command: node
+      args:
+        - agents/naive-agent.js
+    tools:
+      - name: search
+        description: "Search the knowledge base"
+      - name: get_user_data
+        description: "Retrieve user profile data including PII"
+        sensitive: true
+      - name: send_email
+        description: "Send email to customer"
+        destructive: true
+      - name: delete_record
+        description: "Delete a database record"
+        destructive: true
+        permissions:
+          - admin
+      - name: modify_user_permissions
+        description: "Change user permission levels"
+        destructive: true
+        permissions:
+          - admin
+    maxSteps: 10
+    maxCost: 0.50
