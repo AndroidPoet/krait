@@ -1,17 +1,25 @@
 {
   "name": "krait",
-  "version": "0.1.0",
-  "description": "Security testing for AI agents. Stop shipping agents that hallucinate, loop, and leak.",
+  "version": "0.2.0",
+  "description": "Security testing for AI agents. Red team with 133+ OWASP-mapped attacks, LLM-powered attack generation, and mutation fuzzing.",
   "type": "module",
   "bin": {
     "krait": "./dist/index.js"
   },
   "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "patterns",
+    "action.yml",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/index.ts",
     "test": "vitest",
     "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
     "krait": "tsx src/index.ts"
   },
   "keywords": [
@@ -20,13 +28,30 @@
     "security",
     "testing",
     "red-team",
+    "redteam",
     "owasp",
     "llm",
     "vulnerability",
-    "scanner"
+    "scanner",
+    "pentesting",
+    "prompt-injection",
+    "ai-safety",
+    "agent-security",
+    "mutation-testing"
   ],
-  "author": "",
+  "author": "AndroidPoet",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AndroidPoet/krait.git"
+  },
+  "homepage": "https://github.com/AndroidPoet/krait",
+  "bugs": {
+    "url": "https://github.com/AndroidPoet/krait/issues"
+  },
   "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "chalk": "^5.6.2",
     "cli-progress": "^3.12.0",

@@ -1,0 +1,110 @@
+name: "krait Security Scan"
+description: "Run krait security probes against your AI agents in CI/CD"
+branding:
+  icon: "shield"
+  color: "red"
+
+inputs:
+  config:
+    description: "Path to krait config file"
+    required: false
+    default: "krait.yaml"
+  probes:
+    description: "Comma-separated probe categories (omit for all)"
+    required: false
+  audit:
+    description: "Run config audit before scanning"
+    required: false
+    default: "true"
+  output:
+    description: "Output file path (e.g., report.json, report.html)"
+    required: false
+  fail-on:
+    description: "Minimum severity to fail the check (critical, high, medium, low)"
+    required: false
+    default: "critical"
+  timeout:
+    description: "Timeout per probe in ms"
+    required: false
+    default: "30000"
+
+outputs:
+  passed:
+    description: "Number of probes that passed"
+  failed:
+    description: "Number of probes that failed"
+  critical:
+    description: "Number of critical findings"
+  report:
+    description: "Path to the output report file"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+
+    - name: Install krait
+      shell: bash
+      run: npm install -g krait
+
+    - name: Run config audit
+      if: inputs.audit == 'true'
+      shell: bash
+      run: |
+        echo "::group::krait config audit"
+        krait audit ${{ inputs.config }} --json > /tmp/krait-audit.json 2>&1 || true
+        cat /tmp/krait-audit.json
+        echo "::endgroup::"
+
+    - name: Run security scan
+      id: scan
+      shell: bash
+      run: |
+        ARGS="${{ inputs.config }}"
+        if [ -n "${{ inputs.probes }}" ]; then
+          ARGS="$ARGS --probes ${{ inputs.probes }}"
+        fi
+        if [ -n "${{ inputs.output }}" ]; then
+          ARGS="$ARGS -o ${{ inputs.output }}"
+        fi
+        ARGS="$ARGS --timeout ${{ inputs.timeout }}"
+
+        echo "::group::krait security scan"
+        krait scan $ARGS --json > /tmp/krait-results.json 2>&1 || true
+        echo "::endgroup::"
+
+        # Extract summary
+        PASSED=$(cat /tmp/krait-results.json | node -e "const d=require('fs').readFileSync('/dev/stdin','utf8');const j=JSON.parse(d);console.log(j.overallSummary?.passed||0)")
+        FAILED=$(cat /tmp/krait-results.json | node -e "const d=require('fs').readFileSync('/dev/stdin','utf8');const j=JSON.parse(d);console.log(j.overallSummary?.failed||0)")
+        CRITICAL=$(cat /tmp/krait-results.json | node -e "const d=require('fs').readFileSync('/dev/stdin','utf8');const j=JSON.parse(d);console.log(j.overallSummary?.critical||0)")
+
+        echo "passed=$PASSED" >> $GITHUB_OUTPUT
+        echo "failed=$FAILED" >> $GITHUB_OUTPUT
+        echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
+        echo "report=${{ inputs.output }}" >> $GITHUB_OUTPUT
+
+        # Determine if we should fail
+        FAIL_ON="${{ inputs.fail-on }}"
+        EXIT_CODE=0
+
+        case "$FAIL_ON" in
+          critical)
+            [ "$CRITICAL" -gt 0 ] && EXIT_CODE=1
+            ;;
+          high)
+            HIGH=$(cat /tmp/krait-results.json | node -e "const d=require('fs').readFileSync('/dev/stdin','utf8');const j=JSON.parse(d);console.log((j.overallSummary?.critical||0)+(j.overallSummary?.high||0))")
+            [ "$HIGH" -gt 0 ] && EXIT_CODE=1
+            ;;
+          medium|low)
+            [ "$FAILED" -gt 0 ] && EXIT_CODE=1
+            ;;
+        esac
+
+        if [ "$EXIT_CODE" -eq 1 ]; then
+          echo "::error::krait found security vulnerabilities: $FAILED failed ($CRITICAL critical)"
+        fi
+
+        exit $EXIT_CODE

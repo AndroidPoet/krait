@@ -219,6 +219,15 @@ export class ScanRunner {
     };
   }
 
+  /** Execute a single attack against an agent (public — used by red team) */
+  async runSingleAttack(
+    agent: AgentDefinition,
+    attack: ProbeAttack
+  ): Promise<AgentOutput> {
+    const handler = this.resolveHandler(agent);
+    return this.executeAttack(handler, attack);
+  }
+
   private emptyTrajectory(): Trajectory {
     return { steps: [], totalDurationMs: 0, totalTokens: 0, totalCostUsd: 0 };
   }
